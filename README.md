@@ -20,9 +20,19 @@ Nice to have features:
 ## Design
 ![image](https://user-images.githubusercontent.com/85113161/188500779-71cf247c-1720-4a76-9eca-1e73fc2fa2e2.png)
 
-User – A person who would like to use the system.
-UI – The web app itself for the use of the user.
-Load Balancer – Manage the flow of information between the server and an endpoint device.
-Server (worker) – Will execute tasks received from load balancer and return to it responses.
-DB – The database which stores the data.
+- **User** – A person who would like to use the system.
+- **UI** – The web app itself for the use of the user.
+- **Load Balancer** – Manage the flow of information between the server and an endpoint device.
+- **Server (worker)** – Will execute tasks received from load balancer and return to it responses.
+- **DB** – The database which stores the data.
+
+## Architecture & Technology
+Web application which uses a Client-Server architecture (REST).
+The load balancer decides which servers can handle the traffic from the end users.
+It will distribute the work to the servers (workers) & eventually, will return a response back to the client.
+
+
+**Client-Server:** Flask & HTML/CSS
+**Database:** MongoDB
+**Load Balancer:** HAProxyund
 
