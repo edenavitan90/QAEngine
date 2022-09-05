@@ -17,5 +17,12 @@ Nice to have features:
 - Support file & image uploading.
 - Support 2-Factor Authentication.
 
+## Design
+![image](https://user-images.githubusercontent.com/85113161/188500779-71cf247c-1720-4a76-9eca-1e73fc2fa2e2.png)
 
+User – A person who would like to use the system.
+UI – The web app itself for the use of the user.
+Load Balancer – Manage the flow of information between the server and an endpoint device.
+Server (worker) – Will execute tasks received from load balancer and return to it responses.
+DB – The database which stores the data.
 
