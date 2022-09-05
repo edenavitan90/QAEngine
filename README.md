@@ -35,9 +35,9 @@ Web application which uses a Client-Server architecture (REST).
 The load balancer decides which servers can handle the traffic from the end users.
 It will distribute the work to the servers (workers) & eventually, will return a response back to the client.
 
-**Client-Server:** Flask & HTML/CSS
-**Database:** MongoDB
-**Load Balancer:** HAProxyund
+- **Client-Server:** Flask & HTML/CSS
+- **Database:** MongoDB
+- **Load Balancer:** HAProxyund
 
 
 ## Installation Requirements
