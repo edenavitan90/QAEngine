@@ -21,28 +21,33 @@ Nice to have features:
 
 
 ## Design
-![image](https://user-images.githubusercontent.com/85113161/188500779-71cf247c-1720-4a76-9eca-1e73fc2fa2e2.png)
+![uml img](https://user-images.githubusercontent.com/85113161/191566814-4dc23b4a-c4e9-4820-b813-ed07948c12cd.png)
 
 - **User** – A person who would like to use the system.
 - **UI** – The web app itself for the use of the user.
-- **Load Balancer** – Manage the flow of information between the server and an endpoint device.
-- **Server (worker)** – Will execute tasks received from load balancer and return to it responses.
+- **Server (Main)** – Manage the flow of information. Divide the work across the workers.
+- **Server (Worker)** – Will execute tasks received from main server and return to it responses.
 - **DB** – The database which stores the data.
 
 
 ## Architecture & Technology
 Web application which uses a Client-Server architecture (REST).
-The load balancer decides which servers can handle the traffic from the end users.
-It will distribute the work to the servers (workers) & eventually, will return a response back to the client.
+The client will send requests to the server which will be ran as following:  
+- Main server will get the request (query to search) and will split the work between the other workers.
+- Each worker will search the query in the DB and will implement the search using TF-IDF algorithm.
+- Each worker will send back the result to the main server which will then sort them in decreasing order.
+- The main server will send the response back to the client.
+
+Note:  
+We will use ZooKeeper in order to determine on the main server across all of the other servers that will be used.  
+Sharding will be used with MongoDB and each worker will run the TF-IDF algorithm on different shard.
 
 - **Client-Server:** Flask & HTML/CSS
 - **Database:** MongoDB
-- **Load Balancer:** HAProxyund
+- **Configuration Manager:** Zoo Keeper
 
 
 ## Installation Requirements
 This is meant to be a Web-Application.
 Therefore, there is no need in any installation procedures.
 As for production, this application will have its URL address and can be access via the network.
-
-
