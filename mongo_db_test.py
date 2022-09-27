@@ -1,14 +1,16 @@
 from pymongo import MongoClient
 
-user_name = "admin"
-password = "admin"
-URI = f"mongodb+srv://{user_name}:{password}@qaengine.3k5sr9a.mongodb.net/?retryWrites=true&w=majority"
+URI = f"mongodb://localhost:27023"
 
 client = MongoClient(URI)
-#db = client.test
-db = client.admin
-print(db)
-db.command('enableSharding',  'QAEngine_DB')
+my_db = client["QAEngine"]
+print(my_db["users"])
+
+"""mycol = client["QAEngine"]["users"]
+for x in mycol.find():
+  print(x)"""
+
+# db.command('enableSharding',  'QAEngine_DB')
 # db.command({'shardCollection': 'QAEngine_DB.QAEngine_DB_QA_Data', 'key': {'Question': 1}})
 # db.command('listCommands')
 
