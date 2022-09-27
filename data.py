@@ -17,8 +17,12 @@ item_list = []
 for key, value in data_dict.items():
     temp_dict = {}
     temp_dict["Question"] = key
-    temp_dict["Answers"] = value
 
+    answers = []
+    for ans in value:
+        answers.append({"Answer": ans, "Likes": 0, "Dislikes": 0})
+
+    temp_dict["Answers"] = answers
     item_list.append(temp_dict)
 
 with open('db_data_copy.json', 'w') as f:
@@ -39,6 +43,8 @@ db = client["QAEngine"]
 counter_collection = db["counter"]
 qa_collection = db["qa_data"]
 
+counter_collection.update_one({'_id': "qa_id"},
+                              {'$set': {"counter": 0}})
 for item in item_list:
     item["qa_id"] = get_and_increment_next_qa_index(counter_collection)
     qa_collection.insert_one(item)
