@@ -12,7 +12,7 @@ from leader_election import LeaderElection
 BASE_PATH = '/backend_znodes'
 app = Flask(__name__)
 
-@app.route("/", )
+@app.route("/")
 def hello_world():
     return f"<p>{le.server_stats}</p>"
 
