@@ -36,6 +36,11 @@ def get_and_increment_next_qa_index(counter_collection: Collection):
                                                  return_document=ReturnDocument.AFTER)["counter"]
 
 
+def insert_one_qa(counter_collection: Collection, qa_collection: Collection, qa_item):
+    qa_item["qa_id"] = get_and_increment_next_qa_index(counter_collection)
+    qa_collection.insert_one(qa_item)
+
+
 URI = f"mongodb://localhost:27023"
 client = MongoClient(URI)
 db = client["QAEngine"]
