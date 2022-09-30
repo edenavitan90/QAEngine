@@ -1,10 +1,8 @@
-import sys
-import time
-
 from kazoo.client import KazooClient, KazooState
 from kazoo.protocol.states import EventType, WatchedEvent
-
-ZNODE_PREFIX = '/a_'
+import consts
+import sys
+import time
 
 
 class LeaderElection():
@@ -32,7 +30,7 @@ class LeaderElection():
         self.zk.add_listener(self.connection_status_listener)  # notify about connection change
 
     def register(self):
-        path = self.electionNamespace + ZNODE_PREFIX
+        path = self.electionNamespace + consts.ZNODE_PREFIX
         # create ephemeral Znode to represent the node (will create electionNamespace if not exists)
         new_node_path = self.zk.create(path=path, value=self.server_stats.encode(), ephemeral=True, sequence=True, makepath=True)
         self.znode_name = new_node_path.split('/')[-1]

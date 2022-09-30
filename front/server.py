@@ -1,6 +1,9 @@
-from flask import Flask
-from flask import render_template
-from flask import request
+from flask import Flask, request, render_template
+import sys
+
+# sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.getcwd())
+import consts
 
 app = Flask(__name__)
 
