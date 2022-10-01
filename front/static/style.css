@@ -1,0 +1,28 @@
+#loginDiv{
+    margin-top: 5%;
+}
+
+#registerDiv{
+    margin-top: 5%;
+}
+
+#loginBtn{
+    background-color: #6c757d;
+    border-color: #6c757d;
+    margin-top: 2%;
+}
+
+#regsiterBtn{
+    background-color: #6c757d;
+    border-color: #6c757d;
+    margin-top: 2%;
+}
+
+#btnDiv{
+    text-align: center;
+}
+
+#titleDiv{
+    text-align: center;
+    margin-top: 3%
+}
