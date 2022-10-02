@@ -4,7 +4,6 @@ import sys
 import os
 import socket
 
-# sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.getcwd())
 from leader_election import LeaderElection
 import consts
@@ -16,7 +15,7 @@ if __name__ == '__main__':
         sock.bind(('', 0))
         PORT = sock.getsockname()[1]
 
-        le = LeaderElection(f"localhost:2181", f"localhost:{PORT},Worker", consts.BASE_PATH)
+        le = LeaderElection(f"localhost:2181", f"localhost:{PORT},{consts.WORKER},{consts.FREE}", consts.BASE_PATH)
         le.register()
 
         if le.is_leader():

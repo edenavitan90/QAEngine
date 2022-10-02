@@ -5,7 +5,7 @@ import sys
 import time
 
 
-class LeaderElection():
+class LeaderElection:
     def __init__(self, zooKeeperAddresses, server_stats, electionNamespace):
         self.zooKeeperAddresses = zooKeeperAddresses
         self.server_stats: str = server_stats
@@ -44,7 +44,7 @@ class LeaderElection():
         if sorted_children[0] == self.znode_name:
             self._leader = True
             address = self.server_stats.split(",")[0]
-            self.server_stats = f"{address},Leader"
+            self.server_stats = f"{address},{consts.LEADER},{consts.FREE}"
             self.zk.set(self.electionNamespace + '/' + self.znode_name, self.server_stats.encode())
             print(self.server_stats + ' (znode: ' + self.znode_name + ')')
         else:
