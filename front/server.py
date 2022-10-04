@@ -24,16 +24,6 @@ def get_leader(zk, nodes_path):
     return None
 
 
-@staticmethod
-def connection_status_listener(state):
-    if state == KazooState.LOST:
-        print('session to zookeeper was lost')  # Register somewhere that the session was lost
-    elif state == KazooState.SUSPENDED:
-        print('disconnected from zookeeper')  # Handle being disconnected from Zookeeper
-    else:
-        print('connected to zookeeper')  # Handle being connected/reconnected to Zookeeper
-
-
 @app.route("/", methods=["POST", "GET"])
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -94,6 +84,5 @@ def logout():
 if __name__ == '__main__':
     zk = KazooClient(hosts='localhost:2181')
     zk.start()
-    # zk.add_listener(connection_status_listener)  # notify about connection change
     app.run(debug=True, use_reloader=False)
 
