@@ -1,4 +1,5 @@
 import math
+import json
 import os
 
 
@@ -12,67 +13,68 @@ def compute_tf(query_dict, doc):
     tf_dict = {}
     doc_count = doc.count(' ') + 1
     for term in query_dict.keys():
-        term_count = doc.count(term)
-        tf_dict[term] = term_count/float(doc_count)
+        term_count = doc.lower().split(' ').count(term)
+        # term_count = doc.count(term)
+        tf_dict[term] = term_count / float(doc_count)
     return tf_dict
 
 
-def run_tf_idf(books_dict, N, terms):
+def run_tf_idf(questions_dict, N, terms):
     # TF Part
-    for book, book_term in books_dict.items():
-        path = os.getcwd() + os.sep + "books" + os.sep + book
-        with open(path, 'r', encoding='utf-8') as f:
-            book_doc = f.read().lower()
-        books_dict[book] = compute_tf(book_term, book_doc)
+    for qa_id, dict_values in questions_dict.items():
+        terms_tf_dict = dict_values["terms"]
+        document = dict_values["document"]["Question"]
+        questions_dict[qa_id]["terms"] = compute_tf(terms_tf_dict, document)
 
     # IDF Part
-    print()
     nt = 0
     terms_idf_dict = {}  # Holds the idf result for each term.
     for term in terms:
-        for book, book_terms in books_dict.items():
-            if book_terms.get(term, 0) > 0:
+        for qa_id, dict_values in questions_dict.items():
+            terms_dict = dict_values["terms"]
+            if terms_dict.get(term, 0) > 0:
                 nt += 1
         idf_res = compute_idf(N=N, nt=nt)
         terms_idf_dict[term] = idf_res
         nt = 0
 
-    # Calculate TF-IDF
+    # # Calculate TF-IDF
     result = []
     res = 0
-    for book, book_term in books_dict.items():
+    for qa_id, dict_values in questions_dict.items():
+        terms_dict = dict_values["terms"]
+        document = dict_values["document"]
         for term in terms:
-            res += book_term[term] * terms_idf_dict[term]
-        result.append((book, res))
+            res += terms_dict[term] * terms_idf_dict[term]
+        result.append((document, res))
         res = 0
     result.sort(reverse=True, key=lambda y: y[1])
+
     return result
 
 
-def get_books():
-    working_dir = os.getcwd()
-    path = working_dir + os.sep + "books"
-    books_list = []
-    for (root, dirs, file) in os.walk(path):
-        for f in file:
-            if '.txt' in f:
-                books_list.append(f)
-    return books_list
-
-'''
-if __name__ == "__main__":
-    query_string = input("Please insert a query string:\n")
-    splitted_query = query_string.split(' ')
-    splitted_query = [elem for elem in splitted_query if elem.strip()]
-    query_dict = dict.fromkeys(splitted_query, 0)
-    books_list = get_books()
-    books_dict = dict.fromkeys(books_list, query_dict)
-    N = len(books_list)
-    results = run_tf_idf(books_dict, N, splitted_query)
-
-    print("Book in descending order using TF-IDF Algorithm:")
-    for result in results:
-        print(f"Book Title: {result[0].replace('.txt','')}  |   Book Score: {result[1]:.6f}")
-'''
 def run(term, documents):
-    pass
+    print("running")
+    split_term = term.split(' ')
+    split_term = [elem for elem in split_term if elem.strip()]
+    query_dict = dict.fromkeys(split_term, 0)
+
+    questions_dict = {}
+    for document in documents:
+        questions_dict[document["qa_id"]] = {"terms": query_dict, "document": document}
+
+    N = len(documents)
+    results = run_tf_idf(questions_dict, N, split_term)
+
+    return results[:10]
+
+
+# if __name__ == "__main__":
+#
+#     term_arg = "a year"
+#     with open("db_data_copy.json", "r") as f:
+#         documents_arg = json.load(f)
+#         for idx, document_x in enumerate(documents_arg):
+#             document_x["qa_id"] = idx+1
+#         results = run(term=term_arg, documents=documents_arg)
+#

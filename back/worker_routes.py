@@ -7,6 +7,7 @@ import os
 
 sys.path.insert(0, os.getcwd())
 import consts
+import tf_idf
 
 app = Flask(__name__)
 le = None
@@ -89,11 +90,9 @@ def get_qa_query():
     db = client[consts.DB_NAME]
     qa_collection = db[consts.QA_COLLECTION]
     qa = list(qa_collection.find({}, {"_id": 0}))
+    results = tf_idf.run(term=term, documents=qa)
 
-    # TODO: run TF-IDF
-    # TODO: qa object need to contain the tf-idf score.
-
-    return qa
+    return results
 
 
 @app.route("/add_qa", methods=['POST'])

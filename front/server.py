@@ -29,6 +29,9 @@ def login():
 @app.route("/register")
 def register():
     # TODO: recheck both passwords are equal on registration
+    usr = request.form["usrname"]
+    password = request.form["pwd"]
+    repassword = request.form["repwd"]
     return render_template('register.html')
 
 
