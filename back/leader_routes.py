@@ -139,7 +139,7 @@ def get_qa_query():
 
 @app.route('/login', methods=['POST'])
 def login():
-    info = json.loads(request.data)
+    info = json.loads(request.json)
     username = info.get('username')
     password = info.get('password')
 
@@ -163,7 +163,8 @@ def login():
 
 @app.route('/register', methods=['POST'])
 def register():
-    info = json.loads(request.data)
+    print(request.json)
+    info = json.loads(request.json)
     username = info.get('username')
     password = info.get('password')
     new_user = {"user_name": username, "user_password": password}

@@ -64,7 +64,11 @@ def register():
             leader = get_leader(zk, consts.BASE_PATH)
             leader_domain = leader[1]
 
-            url = f"http://{leader_domain}/get_qa_query"
+            url = f"http://{leader_domain}/register"
+
+            print("url:", url)
+            print("body:", body)
+
             response = requests.post(url=url, json=json.dumps(body))
             print(response.content)
             return redirect(url_for("login"))
@@ -90,6 +94,6 @@ def logout():
 if __name__ == '__main__':
     zk = KazooClient(hosts='localhost:2181')
     zk.start()
-    zk.add_listener(connection_status_listener)  # notify about connection change
+    # zk.add_listener(connection_status_listener)  # notify about connection change
     app.run(debug=True, use_reloader=False)
 
