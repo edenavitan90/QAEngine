@@ -1,6 +1,4 @@
 import math
-import json
-import os
 
 
 def compute_idf(N, nt):
@@ -67,14 +65,3 @@ def run(term, documents):
     results = run_tf_idf(questions_dict, N, split_term)
 
     return results[:10]
-
-
-# if __name__ == "__main__":
-#
-#     term_arg = "a year"
-#     with open("db_data_copy.json", "r") as f:
-#         documents_arg = json.load(f)
-#         for idx, document_x in enumerate(documents_arg):
-#             document_x["qa_id"] = idx+1
-#         results = run(term=term_arg, documents=documents_arg)
-#

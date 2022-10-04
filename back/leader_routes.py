@@ -132,8 +132,8 @@ def get_qa_query():
                 qa.extend(future.result())
                 print(future)
 
-        # TODO: sort qa array and return only the 10st best questions.
-        return qa
+        qa.sort(reverse=True, key=lambda y: y[1])
+        return qa[:10]
     return None
 
 

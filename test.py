@@ -7,6 +7,7 @@ db = client["QAEngine"]
 
 qa_collection = db["test"]
 
+# TODO: delete it
 qa = {"Question": "what is java update scheduler?", "Answers": [{"Answer": "Java Update scheduler will check for "
                                                                            "newer Java updates and notify you at the "
                                                                            "scheduled frequency.", "Likes": 0,
