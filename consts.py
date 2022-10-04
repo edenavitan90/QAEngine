@@ -12,6 +12,7 @@ BUSY = "Busy"
 # MongoDB config:
 DB_NAME = "QAEngine"
 QA_COLLECTION = "qa_data"
+USERS_COLLECTION = "users"
 TEST_COLLECTION = "test"
 
 MONGO_DB_MAIN_SERVER = {"name": "config-srv", "primary": "localhost:27023", "secondary": None}

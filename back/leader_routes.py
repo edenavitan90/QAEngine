@@ -97,10 +97,10 @@ def add_qa():
 @app.route("/get_qa_query", methods=['GET'])
 def get_qa_query():
     term = request.args.get('term')
-    workers = get_workers(le.zk, consts.BASE_PATH)
-    num_of_workers = len(workers)
     qa = []
 
+    workers = get_workers(le.zk, consts.BASE_PATH)
+    num_of_workers = len(workers)
     if num_of_workers == 0:
         # No available worker to handle the request.
         msg = "No available worker to handle the request."
@@ -135,6 +135,56 @@ def get_qa_query():
         # TODO: sort qa array and return only the 10st best questions.
         return qa
     return None
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    info = json.loads(request.data)
+    username = info.get('username')
+    password = info.get('password')
+
+    uri = f"mongodb://{consts.MONGO_DB_MAIN_SERVER['primary']}"
+    client = MongoClient(uri)
+    db = client[consts.DB_NAME]
+    users_collection = db[consts.USERS_COLLECTION]
+
+    user = users_collection.find_one({"user_name": username}, {"_id": 0})
+    if user is not None:
+        if user["user_name"] == username and user["user_password"] == password:
+            msg = "Login success."
+            return make_response(jsonify(msg), 200)
+        else:
+            msg = "Login failed."
+            return make_response(jsonify(msg), 401)
+    else:
+        msg = "Login failed."
+        return make_response(jsonify(msg), 401)
+
+
+@app.route('/register', methods=['POST'])
+def register():
+    info = json.loads(request.data)
+    username = info.get('username')
+    password = info.get('password')
+    new_user = {"user_name": username, "user_password": password}
+
+    uri = f"mongodb://{consts.MONGO_DB_MAIN_SERVER['primary']}"
+    client = MongoClient(uri)
+    db = client[consts.DB_NAME]
+    users_collection = db[consts.USERS_COLLECTION]
+
+    is_exists_user = users_collection.find_one({"user_name": username}, {"_id": 0})
+    if is_exists_user is None:
+        insert_result = users_collection.insert_one(new_user)
+        if insert_result.inserted_id is not None:
+            msg = "Registration success."
+            return make_response(jsonify(msg), 201)
+        else:
+            msg = "Registration failed."
+            return make_response(jsonify(msg), 501)
+    else:
+        msg = "Registration failed (user is already exists)."
+        return make_response(jsonify(msg), 409)
 
 
 def run(l_e, port):

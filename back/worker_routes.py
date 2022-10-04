@@ -101,6 +101,7 @@ def add_qa():
     body = json.loads(request.json)
     qa = body["qa"]
     worker = body["worker"]
+    # TODO: add verify_req_sender_is_leader() before.
     return add_or_update_qa_worker(qa, worker)
 
 
