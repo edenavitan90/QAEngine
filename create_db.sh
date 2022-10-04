@@ -43,7 +43,7 @@ sh.addShard("b/localhost:27012")
 
 use QAEngine
 db.createCollection("counter")
-db.counter.insertOne({"_id": "qa_id2", "counter": 0})
+db.counter.insertOne({"_id": "qa_id", "counter": 0})
 db.createCollection("users")
 db.createCollection("qa_data")
 show collections
