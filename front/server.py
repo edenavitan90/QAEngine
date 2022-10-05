@@ -32,11 +32,21 @@ def login():
         usr = request.form["usrname"]
         password = request.form["pwd"]
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        body = {"username": usr, "password": hashed_password}
 
-        # TODO: Add checking credentials mechanism, obviously, will hash password on registration and checking.
+        leader = get_leader(zk, consts.BASE_PATH)
+        leader_domain = leader[1]
 
-        session["user"] = usr  # actually in cookies
-        return redirect(url_for("platform"))
+        url = f"http://{leader_domain}/login"
+        response = requests.post(url=url, json=json.dumps(body))
+        if response.status_code in consts.STATUS_OK:
+            session["user"] = usr
+            return redirect(url_for("platform"))
+        else:
+            # TODO: alert upon fail
+            print(response.status_code)
+            print(response.json())
+            return redirect(url_for("login"))
     else:
         if "user" in session:
             return redirect(url_for("platform"))
@@ -57,12 +67,11 @@ def register():
             leader_domain = leader[1]
 
             url = f"http://{leader_domain}/register"
-
-            print("url:", url)
-            print("body:", body)
-
             response = requests.post(url=url, json=json.dumps(body))
-            print(response.content)
+
+            # TODO: alert upon successful
+            print(response.status_code)
+            print(response.json())
             return redirect(url_for("login"))
         else:
             # Passwords are not matched
@@ -85,22 +94,15 @@ def platform():
         args = request.args
         query = args.get('query', '')
         if query != '':
-            print("query:", query)
-            # TODO: call backend and get the queries.
-            # TODO: Check if the score > 0, if so then show it in html.
-            # TODO: Eden QA list is a tuple, we will need to drop the score after checking.
             # TODO: Take care of increment likes & dislikes
             # Upon increment -> just update in mongo and then GET method for the new data.
 
-            qas = [{"Question": "TEST QUESTIONS 1",
-                   "Answers": [{"Answer": "TEST ANSWER first", "Likes": 0, "Dislikes": 0},
-                               {"Answer": "TEST ANSWER second", "Likes": 12, "Dislikes": 4}],
-                   "qa_id": 1},
-                   {"Question": "TEST QUESTIONS 2",
-                    "Answers": [{"Answer": "TEST ANSWER first", "Likes": 312, "Dislikes": 2},
-                                {"Answer": "TEST ANSWER second", "Likes": 12, "Dislikes": 4}],
-                    "qa_id": 2}
-                   ]
+            leader = get_leader(zk, consts.BASE_PATH)
+            leader_domain = leader[1]
+
+            url = f"http://{leader_domain}/get_qa_query?term={query}"
+            response = requests.get(url=url)
+            qas = response.json()
 
             for qa in qas:
                 for answer in qa["Answers"]:
@@ -132,13 +134,12 @@ def new_question():
         leader_domain = leader[1]
 
         body = {"question": question, "answer": answer}
-        url = f"http://{leader_domain}/register"
-
-        print("url:", url)
-        print("body:", body)
+        url = f"http://{leader_domain}/add_qa"
 
         response = requests.post(url=url, json=json.dumps(body))
-        print(response.content)
+        # TODO: alert response
+        print(response.status_code)
+        print(response.content.decode())
 
     if "user" in session:
         usr = session["user"]

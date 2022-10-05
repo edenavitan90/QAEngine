@@ -11,7 +11,6 @@ concat_data = pd.concat([data1, data2, data3], axis=0)
 data = concat_data.drop(columns=['ArticleTitle', 'DifficultyFromQuestioner', 'DifficultyFromAnswerer', 'ArticleFile'])
 
 data_dict = data.groupby(['Question'], dropna=True).apply(lambda x: list(set(x['Answer'].tolist()))).to_dict()
-print(data_dict)
 
 item_list = []
 for key, value in data_dict.items():
@@ -32,8 +31,8 @@ with open('db_data_copy.json', 'w') as f:
 ###################################
 def get_and_increment_next_qa_index(counter_collection: Collection):
     return counter_collection.find_one_and_update({'_id': "qa_id"},
-                                                 {'$inc': {"counter": 1}},
-                                                 return_document=ReturnDocument.AFTER)["counter"]
+                                                  {'$inc': {"counter": 1}},
+                                                  return_document=ReturnDocument.AFTER)["counter"]
 
 
 def insert_one_qa(counter_collection: Collection, qa_collection: Collection, qa_item):

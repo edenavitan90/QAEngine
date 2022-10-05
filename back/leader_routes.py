@@ -66,7 +66,7 @@ def add_qa():
         msg = "No available worker to handle the request."
         return make_response(jsonify(msg), 500)
     else:
-        body = request.json
+        body = json.loads(request.json)
         question = body["question"]
         answer = body["answer"]
         qa = {"Question": question, "Answers": [{"Answer": answer, "Likes": 0, "Dislikes": 0}]}
@@ -85,7 +85,6 @@ def add_qa():
                 url = f"http://{worker_address}/add_qa"
                 new_body = {"qa": qa, "worker": worker}
                 response = requests.post(url=url, json=json.dumps(new_body))
-                print(response.status_code)
                 le.zk.set(f"{consts.BASE_PATH}/{worker_name}",
                           f"{worker_address},{consts.WORKER},{consts.FREE}".encode())
                 return make_response(jsonify(response.content.decode()), response.status_code)
@@ -130,10 +129,19 @@ def get_qa_query():
 
             for future in concurrent.futures.as_completed(futures):
                 qa.extend(future.result())
-                print(future)
 
-        qa.sort(reverse=True, key=lambda y: y[1])
-        return qa[:10]
+        qa_temp = []
+        qa_final = []
+        for i in qa:
+            if i[1] != 0:
+                qa_temp.append(i)
+
+        qa_temp.sort(reverse=True, key=lambda y: y[1])
+
+        for i in qa_temp:
+            qa_final.append(i[0])
+
+        return qa_final[:10]
     return None
 
 
@@ -163,7 +171,6 @@ def login():
 
 @app.route('/register', methods=['POST'])
 def register():
-    print(request.json)
     info = json.loads(request.json)
     username = info.get('username')
     password = info.get('password')

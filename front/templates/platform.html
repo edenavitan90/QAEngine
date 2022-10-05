@@ -73,7 +73,7 @@
         <div class="row" id="alertDiv">
             <div class="col-4"></div>
             <div class="col alert alert-primary" role="alert">
-                There are not relevant Questions..
+                There are no relevant Questions.
             </div>
             <div class="col-4"></div>
         </div>
@@ -90,7 +90,7 @@
                         <div class="card-header" id="heading{{idx}}">
                           <h5 class="mb-0">
                             <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ns.idx}}" aria-expanded="true" aria-controls="collapse{{ns.idx}}">
-                                {{qa["Question"]}}
+                                {{ns.idx}}) {{qa["Question"]}}
                             </button>
                           </h5>
                         </div>
@@ -137,9 +137,7 @@
             {% endfor %}
         </div>
     </div>
-
-
-
-
+    <br>
+    <br>
 </body>
 </html>

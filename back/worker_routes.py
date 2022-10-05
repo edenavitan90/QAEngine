@@ -1,3 +1,4 @@
+from pymongo.collection import Collection, ReturnDocument
 from flask import Flask, request, make_response, jsonify
 from pymongo import MongoClient
 import requests
@@ -14,11 +15,23 @@ le = None
 PORT = None
 
 
+def get_and_increment_next_qa_index(counter_collection: Collection):
+    return counter_collection.find_one_and_update({'_id': "qa_id"},
+                                                  {'$inc': {"counter": 1}},
+                                                  return_document=ReturnDocument.AFTER)["counter"]
+
+
+def insert_one_qa(counter_collection: Collection, qa_collection: Collection, qa_item):
+    qa_item["qa_id"] = get_and_increment_next_qa_index(counter_collection)
+    return qa_collection.insert_one(qa_item)
+
+
 def add_or_update_qa_worker(qa, worker):
     uri = f"mongodb://{consts.MONGO_DB_MAIN_SERVER['primary']}"
     client = MongoClient(uri)
     db = client[consts.DB_NAME]
     qa_collection = db[consts.QA_COLLECTION]
+    counter_collection = db[consts.COUNTER_COLLECTION]
 
     result = qa_collection.find_one({"Question": qa["Question"]}, {"_id": 0})
     if result is not None:
@@ -40,7 +53,7 @@ def add_or_update_qa_worker(qa, worker):
             return make_response(jsonify(msg), 200)
     else:
         # insert new one.
-        insert_result = qa_collection.insert_one(qa)
+        insert_result = insert_one_qa(counter_collection, qa_collection, qa)
 
         if insert_result.inserted_id is not None:
             msg = "Done"
