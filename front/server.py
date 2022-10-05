@@ -15,6 +15,7 @@ app = Flask(__name__)
 app.secret_key = "justforproject"
 
 
+# TODO: Move to a util file.
 def get_leader(zk, nodes_path):
     children = zk.get_children(nodes_path)
     for child in children:
@@ -30,6 +31,8 @@ def login():
     if request.method == "POST":
         usr = request.form["usrname"]
         password = request.form["pwd"]
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
         # TODO: Add checking credentials mechanism, obviously, will hash password on registration and checking.
 
         session["user"] = usr  # actually in cookies
@@ -42,7 +45,6 @@ def login():
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
-    # TODO: recheck both passwords are equal on registration
     if request.method == "POST":
         usr = request.form["usrname"]
         password = request.form["pwd"]
@@ -62,16 +64,85 @@ def register():
             response = requests.post(url=url, json=json.dumps(body))
             print(response.content)
             return redirect(url_for("login"))
+        else:
+            # Passwords are not matched
+            session["success_register"] = False
+            return redirect(url_for("register"))
 
+    if "success_register" in session:
+        is_success = session.pop("success_register", None)
+        return render_template('register.html', success=is_success)
     return render_template('register.html')
 
 
-@app.route("/platform")
+@app.route("/platform", methods=["POST", "GET"])
 def platform():
+    qas = []
+    qas_empty = False
+    query = ""
+    if request.args:
+        # A GET method with query.
+        args = request.args
+        query = args.get('query', '')
+        if query != '':
+            print("query:", query)
+            # TODO: call backend and get the queries.
+            # TODO: Check if the score > 0, if so then show it in html.
+            # TODO: Eden QA list is a tuple, we will need to drop the score after checking.
+            # TODO: Take care of increment likes & dislikes
+            # Upon increment -> just update in mongo and then GET method for the new data.
+
+            qas = [{"Question": "TEST QUESTIONS 1",
+                   "Answers": [{"Answer": "TEST ANSWER first", "Likes": 0, "Dislikes": 0},
+                               {"Answer": "TEST ANSWER second", "Likes": 12, "Dislikes": 4}],
+                   "qa_id": 1},
+                   {"Question": "TEST QUESTIONS 2",
+                    "Answers": [{"Answer": "TEST ANSWER first", "Likes": 312, "Dislikes": 2},
+                                {"Answer": "TEST ANSWER second", "Likes": 12, "Dislikes": 4}],
+                    "qa_id": 2}
+                   ]
+
+            for qa in qas:
+                for answer in qa["Answers"]:
+                    if answer["Likes"] + answer["Dislikes"] == 0:
+                        answer["Relevant"] = 0
+                    else:
+                        answer["Relevant"] = answer["Likes"] / (answer["Likes"] + answer["Dislikes"])
+                qa["Answers"].sort(reverse=True, key=lambda y: y["Relevant"])
+
+            if not qas:
+                # No matched Questions/Answers in the DB
+                qas_empty = True
+
     if "user" in session:
         usr = session["user"]
-        return render_template('platform.html', user=usr)
+        return render_template('platform.html', user=usr, qas=qas, query=query, qas_empty=qas_empty)
 
+    return redirect(url_for("login"))
+
+
+@app.route("/new_question", methods=["POST", "GET"])
+def new_question():
+    if request.method == "POST":
+        # Creating new question
+        question = request.form["question"]
+        answer = request.form["answer"]
+
+        leader = get_leader(zk, consts.BASE_PATH)
+        leader_domain = leader[1]
+
+        body = {"question": question, "answer": answer}
+        url = f"http://{leader_domain}/register"
+
+        print("url:", url)
+        print("body:", body)
+
+        response = requests.post(url=url, json=json.dumps(body))
+        print(response.content)
+
+    if "user" in session:
+        usr = session["user"]
+        return render_template('new_question.html', user=usr)
     return redirect(url_for("login"))
 
 

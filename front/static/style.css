@@ -2,6 +2,10 @@
     margin-top: 5%;
 }
 
+#newQuestionDiv{
+    margin-top: 5%;
+}
+
 #registerDiv{
     margin-top: 5%;
 }
@@ -25,4 +29,26 @@
 #titleDiv{
     text-align: center;
     margin-top: 3%
+}
+
+#alertDiv{
+    margin-top: 1%;
+    text-align: center;
+}
+
+#searchBar{
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+#searchDiv{
+
+}
+
+#questionDiv{
+    margin-top: 1%;
+}
+
+#queryDiv{
+    margin-bottom: 1%;
 }
