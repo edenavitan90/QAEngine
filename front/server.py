@@ -1,5 +1,5 @@
 import time
-
+# TODO: arrange import by length
 from flask import Flask, request, render_template, redirect, url_for, session
 from kazoo.protocol.states import EventType, WatchedEvent
 from kazoo.client import KazooClient, KazooState
@@ -15,8 +15,6 @@ import consts
 
 app = Flask(__name__)
 app.secret_key = "justforproject"
-
-is_lock = False
 
 # TODO: Move to a util file.
 def get_leader(zk, nodes_path):
@@ -89,7 +87,6 @@ def register():
 
 @app.route("/platform", methods=["POST", "GET"])
 def platform():
-    global is_lock
     qas = []
     qas_empty = False
     query = ''
@@ -103,29 +100,8 @@ def platform():
         if query == '':
             query = session.get('query', '')
 
-        if query != '':
-            # TODO: Take care of increment likes & dislikes
-            # Upon increment -> just update in mongo and then GET method for the new data.
-
-            session["query"] = query
-
-            leader = get_leader(zk, consts.BASE_PATH)
-            leader_domain = leader[1]
-
-            print("query")
-            url = f"http://{leader_domain}/get_qa_query?term={query}"
-            response = requests.get(url=url)
-
-            qas = response.json()
-            print(qas)
-            for qa in qas:
-                for answer in qa["Answers"]:
-                    answer["Relevant"] = answer["Likes"] - answer["Dislikes"]
-                qa["Answers"].sort(reverse=True, key=lambda y: y["Relevant"])
-
-            if not qas:
-                # No matched Questions/Answers in the DB
-                qas_empty = True
+        leader = get_leader(zk, consts.BASE_PATH)
+        leader_domain = leader[1]
 
         if likes != '' or dislikes != '':
             if likes != '':
@@ -137,18 +113,27 @@ def platform():
 
             body = {"qa_id": qa_id, "answer": answer, "type": type}
 
-            leader = get_leader(zk, consts.BASE_PATH)
-            leader_domain = leader[1]
-
             url = f"http://{leader_domain}/update_question_rank"
             response = requests.post(url=url, json=json.dumps(body))
-            print(response.json())
             # TODO: alert if status failed
             # if response.status_code in consts.STATUS_OK:
 
+        if query != '':
+            session["query"] = query
+            url = f"http://{leader_domain}/get_qa_query?term={query}"
+            response = requests.get(url=url)
+            qas = response.json()
+            for qa in qas:
+                for answer in qa["Answers"]:
+                    answer["Relevant"] = answer["Likes"] - answer["Dislikes"]
+                qa["Answers"].sort(reverse=True, key=lambda y: y["Relevant"])
+
+            if not qas:
+                # No matched Questions/Answers in the DB
+                qas_empty = True
+
     if "user" in session:
         usr = session["user"]
-        # query = session.get('query', '')
         return render_template('platform.html', user=usr, qas=qas, query=query, qas_empty=qas_empty)
 
     return redirect(url_for("login"))
