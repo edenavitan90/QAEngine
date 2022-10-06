@@ -198,6 +198,40 @@ def register():
         return make_response(jsonify(msg), 409)
 
 
+@app.route('/update_question_rank', methods=['POST'])
+def update_question_rank():
+    workers = get_workers(le.zk, consts.BASE_PATH)
+    num_of_workers = len(workers)
+    if num_of_workers == 0:
+        # No available worker to handle the request.
+        msg = "No available worker to handle the request."
+        return make_response(jsonify(msg), 500)
+    else:
+        body = json.loads(request.json)
+        type = body.get('type')
+        qa_id = body.get('qa_id')
+        answer = body.get('answer')
+
+        # set 2 min to timeout.
+        t_end = time.time() + consts.TIMEOUT_2_MIN
+        while time.time() < t_end:
+            worker = get_free_worker(le.zk, consts.BASE_PATH)
+            if worker is not None:
+                worker_name = worker[0]
+                worker_address = worker[1]
+
+                le.zk.set(f"{consts.BASE_PATH}/{worker_name}",
+                          f"{worker_address},{consts.WORKER},{consts.BUSY}".encode())
+                worker = (worker_name, worker_address, consts.WORKER, consts.BUSY)
+
+                url = f"http://{worker_address}/update_question_rank"
+                new_body = {"qa_id": qa_id, "answer": answer, "type": type, "worker": worker}
+                response = requests.post(url=url, json=json.dumps(new_body))
+                le.zk.set(f"{consts.BASE_PATH}/{worker_name}",
+                          f"{worker_address},{consts.WORKER},{consts.FREE}".encode())
+                return make_response(jsonify(response.content.decode()), response.status_code)
+
+
 def run(l_e, port):
     global le, PORT
     print("leader: run...")

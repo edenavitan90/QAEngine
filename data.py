@@ -58,6 +58,7 @@ for item in item_list:
     # OR
     # insert_one_qa(counter_collection, qa_collection, item)
     item["qa_id"] = counter
+    # TODO: use db counter
     counter += 1
     qa_collection.insert_one(item)
 

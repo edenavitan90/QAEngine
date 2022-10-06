@@ -104,7 +104,6 @@ def get_qa_query():
     qa_collection = db[consts.QA_COLLECTION]
     qa = list(qa_collection.find({}, {"_id": 0}))
     results = tf_idf.run(term=term, documents=qa)
-    print(results)
     return results
 
 
@@ -117,6 +116,38 @@ def add_qa():
     return add_or_update_qa_worker(qa, worker)
 
 
+def worker_update_question_rank(qa_id, answer, type, worker):
+    uri = f"mongodb://{consts.MONGO_DB_MAIN_SERVER['primary']}"
+    client = MongoClient(uri)
+    db = client[consts.DB_NAME]
+    qa_collection = db[consts.QA_COLLECTION]
+
+    find_one = qa_collection.find_one({"qa_id": int(qa_id)}, {"_id": 0})
+    if find_one is not None:
+        for ans in find_one["Answers"]:
+            if ans["Answer"] == answer:
+                ans[type] += 1
+                result = qa_collection.replace_one({"qa_id": int(qa_id)}, find_one)
+                if result.modified_count >= 1:
+                    msg = "Done"
+                    return make_response(jsonify(msg), 200)
+                else:
+                    break
+    msg = "Error"
+    return make_response(jsonify(msg), 500)
+
+
+@app.route('/update_question_rank', methods=['POST'])
+def update_question_rank():
+    body = json.loads(request.json)
+    qa_id = body["qa_id"]
+    answer = body["answer"]
+    worker = body["worker"]
+    type = body["type"]
+    # TODO: add verify_req_sender_is_leader() before.
+    return worker_update_question_rank(qa_id, answer, type, worker)
+
+
 def run(l_e, port):
     global le, PORT
     print("worker: run...")
@@ -125,4 +156,3 @@ def run(l_e, port):
     app.run(port=PORT, debug=True, use_reloader=False)
 
 
-{"Question": "What is QA in machine learning?", "Answers": [{"Answer": "In the quality assurance journey, the machine learning testing strategy provides accuracy and efficiency benefits.", "Likes": 0, "Dislikes": 0}]}
