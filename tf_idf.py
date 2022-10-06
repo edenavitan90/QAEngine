@@ -52,7 +52,6 @@ def run_tf_idf(questions_dict, N, terms):
 
 
 def run(term, documents):
-    print("running")
     split_term = term.split(' ')
     split_term = [elem for elem in split_term if elem.strip()]
     query_dict = dict.fromkeys(split_term, 0)

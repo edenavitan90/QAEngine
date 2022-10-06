@@ -95,6 +95,7 @@ def add_qa():
 
 @app.route("/get_qa_query", methods=['GET'])
 def get_qa_query():
+    start = time.process_time()
     term = request.args.get('term')
     qa = []
 
@@ -141,6 +142,8 @@ def get_qa_query():
         for i in qa_temp:
             qa_final.append(i[0])
 
+        end = time.process_time()
+        print(f"process time: /get_qa_query [GET] - {'{:0.5f}'.format(end - start)} [SEC]")
         return qa_final[:10]
     return None
 

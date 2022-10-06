@@ -1,7 +1,8 @@
+from pymongo.collection import Collection, ReturnDocument
+from pymongo import MongoClient
 import pandas as pd
 import json
-from pymongo import MongoClient
-from pymongo.collection import Collection, ReturnDocument
+import consts
 
 data1 = pd.read_csv("qa/S10_question_answer_pairs.txt", sep="\t").dropna()
 data2 = pd.read_csv("qa/S10_question_answer_pairs.txt", sep="\t").dropna()
@@ -42,15 +43,22 @@ def insert_one_qa(counter_collection: Collection, qa_collection: Collection, qa_
 
 URI = f"mongodb://localhost:27023"
 client = MongoClient(URI)
-db = client["QAEngine"]
+db = client[consts.DB_NAME]
 
-counter_collection = db["counter"]
-qa_collection = db["qa_data"]
+counter_collection = db[consts.COUNTER_COLLECTION]
+qa_collection = db[consts.QA_COLLECTION]
 
 counter_collection.update_one({'_id': "qa_id"},
                               {'$set': {"counter": 0}})
+
+counter = 1
 for item in item_list:
-    item["qa_id"] = get_and_increment_next_qa_index(counter_collection)
+    # item["qa_id"] = get_and_increment_next_qa_index(counter_collection)
+    # qa_collection.insert_one(item)
+    # OR
+    # insert_one_qa(counter_collection, qa_collection, item)
+    item["qa_id"] = counter
+    counter += 1
     qa_collection.insert_one(item)
 
 

@@ -43,7 +43,7 @@ def add_or_update_qa_worker(qa, worker):
                 break
         if not answer_exists:
             # update.
-            update_result = qa_collection.update_one({"Question": qa["Question"]},
+            update_result = qa_collection.update_one({"qa_id": result["qa_id"], "Question": qa["Question"]},
                                                      {'$push': {'Answers': qa['Answers'][0]}})
             if update_result.raw_result['nModified'] >= 1:
                 msg = "Done"
@@ -104,7 +104,7 @@ def get_qa_query():
     qa_collection = db[consts.QA_COLLECTION]
     qa = list(qa_collection.find({}, {"_id": 0}))
     results = tf_idf.run(term=term, documents=qa)
-
+    print(results)
     return results
 
 
@@ -123,3 +123,6 @@ def run(l_e, port):
     le = l_e
     PORT = port
     app.run(port=PORT, debug=True, use_reloader=False)
+
+
+{"Question": "What is QA in machine learning?", "Answers": [{"Answer": "In the quality assurance journey, the machine learning testing strategy provides accuracy and efficiency benefits.", "Likes": 0, "Dislikes": 0}]}

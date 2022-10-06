@@ -1,18 +1,12 @@
-from pymongo import MongoClient
-from pymongo.collection import Collection, ReturnDocument
+import requests
 
-URI = f"mongodb://localhost:27023"
-client = MongoClient(URI)
-db = client["QAEngine"]
+# url = "https://s3.amazonaws.com/my89public/quac/val_v0.2.json"
+# url = "https://s3.amazonaws.com/my89public/quac/train_v0.2.json"
+url = "https://downloads.cs.stanford.edu/nlp/data/coqa/coqa-train-v1.0.json"
 
-qa_collection = db["test"]
+response = requests.get(url=url)
 
-# TODO: delete it
-qa = {"Question": "what is java update scheduler?", "Answers": [{"Answer": "Java Update scheduler will check for "
-                                                                           "newer Java updates and notify you at the "
-                                                                           "scheduled frequency.", "Likes": 0,
-                                                                 "Dislikes": 0}]}
+data = response.json()["data"]
 
-result = qa_collection.insert_one(qa)
-print("qa:", result)
-print("type(qa):", type(result))
+print(len(data))
+print(data[:1])
