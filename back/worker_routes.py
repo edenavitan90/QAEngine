@@ -1,7 +1,6 @@
 from pymongo.collection import Collection, ReturnDocument
 from flask import Flask, request, make_response, jsonify
 from pymongo import MongoClient
-import requests
 import json
 import sys
 import os

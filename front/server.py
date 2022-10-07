@@ -1,13 +1,11 @@
 from flask import Flask, request, render_template, redirect, url_for, session
-from kazoo.protocol.states import EventType, WatchedEvent
-from kazoo.client import KazooClient, KazooState
+from kazoo.client import KazooClient
 import requests
 import hashlib
 import json
 import sys
 import os
 
-# sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.getcwd())
 import consts
 
