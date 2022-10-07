@@ -88,11 +88,33 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-header" id="heading{{idx}}">
-                          <h5 class="mb-0">
-                            <button class="btn btn-link" style="text-align: left;" data-toggle="collapse" data-target="#collapse{{ns.idx}}" aria-expanded="true" aria-controls="collapse{{ns.idx}}">
-                                {{ns.idx}}) {{qa["Question"]}}
-                            </button>
-                          </h5>
+                            <div class="row">
+                               <div class="col">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link" style="text-align: left;" data-toggle="collapse" data-target="#collapse{{ns.idx}}" aria-expanded="true" aria-controls="collapse{{ns.idx}}">
+                                            {{ns.idx}}) {{qa["Question"]}}
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div class="col-3">
+                                    <div class="row">
+
+                                        <div class="col">
+                                            <h5>
+                                                {% if ns.idx == 1 %}
+                                                <span class="badge badge-success">Best Match</span>
+                                                {% endif %}
+                                                {% if query == qa["Question"] %}
+                                                <span class="badge badge-warning">Full Match</span>
+                                                {% endif %}
+                                            </h5>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
                         <div id="collapse{{ns.idx}}" class="collapse" data-parent="#accordion">
                         {% for answer in qa["Answers"]%}
@@ -144,21 +166,6 @@
     </div>
     <br>
     <br>
-    <!--
-    <script type="text/javascript">
-        $(document).on('submit','#likesForm',function(e) {
-          console.log('likes');
-          e.preventDefault();
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).on('submit','#dislikesForm',function(e) {
-          console.log('dislikes');
-          e.preventDefault();
-        });
-    </script>
-
-    -->
     <script type="text/javascript">
         function storeQaId(id) {
             sessionStorage.setItem("collapse_id", id);
