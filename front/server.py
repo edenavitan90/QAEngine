@@ -1,13 +1,11 @@
-import time
-# TODO: arrange import by length
 from flask import Flask, request, render_template, redirect, url_for, session
 from kazoo.protocol.states import EventType, WatchedEvent
 from kazoo.client import KazooClient, KazooState
-import os
-import sys
-import hashlib
 import requests
+import hashlib
 import json
+import sys
+import os
 
 # sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.getcwd())
@@ -15,6 +13,7 @@ import consts
 
 app = Flask(__name__)
 app.secret_key = "justforproject"
+
 
 # TODO: Move to a util file.
 def get_leader(zk, nodes_path):
@@ -44,14 +43,14 @@ def login():
             session["user"] = usr
             return redirect(url_for("platform"))
         else:
-            # TODO: alert upon fail
-            print(response.status_code)
-            print(response.json())
+            # TODO: alert upon fail - need to check if DONE
+            session["success_register"] = False
             return redirect(url_for("login"))
     else:
         if "user" in session:
             return redirect(url_for("platform"))
-        return render_template('login.html')
+        is_success = session.pop("success_register", None)
+        return render_template('login.html', success=is_success)
 
 
 @app.route("/register", methods=["POST", "GET"])
@@ -70,10 +69,13 @@ def register():
             url = f"http://{leader_domain}/register"
             response = requests.post(url=url, json=json.dumps(body))
 
-            # TODO: alert upon successful
-            print(response.status_code)
-            print(response.json())
-            return redirect(url_for("login"))
+            # TODO: alert upon successful - need to check if DONE
+            if response.status_code in consts.STATUS_OK:
+                session["user"] = usr
+                return redirect(url_for("platform"))
+            else:
+                session["success_register"] = False
+                return redirect(url_for("register"))
         else:
             # Passwords are not matched
             session["success_register"] = False
@@ -115,8 +117,10 @@ def platform():
 
             url = f"http://{leader_domain}/update_question_rank"
             response = requests.post(url=url, json=json.dumps(body))
-            # TODO: alert if status failed
-            # if response.status_code in consts.STATUS_OK:
+            # TODO: alert if status failed - I don't think there is a need to alert on fail..
+            # We cant just alert box with an error had occurred when like or so..
+            if response.status_code not in consts.STATUS_OK:
+                pass  # alert box saying error had occurred?
 
         if query != '':
             session["query"] = query
@@ -153,13 +157,21 @@ def new_question():
         url = f"http://{leader_domain}/add_qa"
 
         response = requests.post(url=url, json=json.dumps(body))
-        # TODO: alert response
+
+        # TODO: alert response - need to check if DONE
         print(response.status_code)
         print(response.content.decode())
+        if response.status_code in consts.STATUS_OK:
+            session["success_register"] = True
+            return redirect(url_for("platform"))
+        else:
+            session["success_register"] = False
+            return redirect(url_for("platform"))
 
     if "user" in session:
         usr = session["user"]
-        return render_template('new_question.html', user=usr)
+        is_success = session.pop("success_register", None)
+        return render_template('new_question.html', user=usr, success=is_success)
     return redirect(url_for("login"))
 
 

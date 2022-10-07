@@ -57,6 +57,17 @@
             </div>
             <div class="col-4"></div>
         </div>
+
+        <!--Alert-->
+        {% if success == False %}
+        <div class="row" id="alertDiv">
+            <div class="col-4"></div>
+            <div class="col alert alert-danger" role="alert">
+                Password is not correct or User is not exists!
+            </div>
+            <div class="col-4"></div>
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>

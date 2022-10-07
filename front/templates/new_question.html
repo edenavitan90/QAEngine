@@ -64,6 +64,27 @@
             <div class="col-4"></div>
         </div>
 
+        <!--Alert Success-->
+        {% if success == True %}
+        <div class="row" id="alertDiv">
+            <div class="col-4"></div>
+            <div class="col alert alert-success" role="alert">
+                Question was successfully added.
+            </div>
+            <div class="col-4"></div>
+        </div>
+        {% endif %}
+
+        <!--Alert Failed-->
+        {% if success == False %}
+        <div class="row" id="alertDivFail">
+            <div class="col-4"></div>
+            <div class="col alert alert-danger" role="alert">
+                Failed to add new question & answer!
+            </div>
+            <div class="col-4"></div>
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>
