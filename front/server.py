@@ -163,10 +163,10 @@ def new_question():
         print(response.content.decode())
         if response.status_code in consts.STATUS_OK:
             session["success_register"] = True
-            return redirect(url_for("platform"))
+            return redirect(url_for("new_question"))
         else:
             session["success_register"] = False
-            return redirect(url_for("platform"))
+            return redirect(url_for("new_question"))
 
     if "user" in session:
         usr = session["user"]
