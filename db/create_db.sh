@@ -49,7 +49,6 @@ db.createCollection("qa_data")
 show collections
 show dbs
 
-# db.qa_data.createIndex({ _id: "hashed"}) # needed?
 sh.shardCollection('QAEngine.qa_data', {'qa_id':'hashed'})
 db.qa_data.getShardDistribution()
 
