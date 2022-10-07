@@ -98,7 +98,6 @@
                                 </div>
                                 <div class="col-3">
                                     <div class="row">
-
                                         <div class="col">
                                             <h5>
                                                 {% if ns.idx == 1 %}
@@ -109,12 +108,9 @@
                                                 {% endif %}
                                             </h5>
                                         </div>
-
                                     </div>
                                 </div>
-W
                             </div>
-
                         </div>
                         <div id="collapse{{ns.idx}}" class="collapse" data-parent="#accordion">
                         {% for answer in qa["Answers"]%}
@@ -139,7 +135,8 @@ W
                                           </div>
                                       </div>
                                       <br>
-                                      <div class="row"><div class="col-6">
+                                      <div class="row">
+                                          <div class="col-6">
                                               Dislikes: {{answer["Dislikes"]}}
                                           </div>
                                           <div class="col-6">
@@ -150,7 +147,8 @@ W
                                                       </svg>
                                                   </button>
                                               </form>
-                                          </div></div>
+                                          </div>
+                                      </div>
                                   </div>
                               </div>
                             </div>
