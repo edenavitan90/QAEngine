@@ -6,13 +6,16 @@ A Questions & Answers engine which will provide users the opportunity to
 ask questions in any topic they desired.
 These questions can be answered by other users which can provide their own opinion/answer to the question.
 
+Important! The [a relative link]()documentation folder contains relevant installation guides & demo video for the project.  
+As well, a PDF which contains information regarding to the MongoDB data distribution.
 
 ## Features
 - Login system
 - Create new account
-- Issue new question
+- Search a query in our DB using TF-IDF algorithm
+- Create new question & answer
 - Answer existing questions
-- Mark answer as helpful (by the owner of the question)
+- Mark answer as helpful (by like/dislike mechanism)
 
 Nice to have features:
 - Create sections for different topics.
@@ -26,9 +29,12 @@ Nice to have features:
 
 - **User** – A person who would like to use the system.
 - **UI** – The web app itself for the use of the user.
-- **Server (Main)** – Manage the flow of information. Divide the work across the workers.
+- **Server (Leader)** – Manage the flow of information. Divide the work across the workers.
 - **Server (Worker)** – Will execute tasks received from main server and return to it responses.
-- **DB** – The database which stores the data.
+- **DB**:  
+  - **DB.Router** – Router processes and targets the operations to shards and then returns results to the clients.
+  - **DB.Config-srv** – Store the metadata and configuration information for a sharded cluster.
+  - **DB.Shards** – Shards instances which stores the data.
 
 
 ## Architecture & Technology
