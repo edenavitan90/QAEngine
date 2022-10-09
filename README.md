@@ -6,7 +6,7 @@ A Questions & Answers engine which will provide users the opportunity to
 ask questions in any topic they desired.
 These questions can be answered by other users which can provide their own opinion/answer to the question.
 
-Important! The [documentation](QAEngine/documentation/) folder contains relevant installation guides & demo videos for the project.  
+Important! The [documentation](https://github.com/edenavitan90/QAEngine/tree/main/documentation) folder contains relevant installation guides & demo videos for the project.  
 As well, a PDF which contains information regarding to the MongoDB data distribution.
 
 ## Features
@@ -65,14 +65,14 @@ Activate:
 Then, install the requirements.txt:  
   pip install -r requirements.txt  
 
-**There is an installation guide in the [documentation](QAEngine/documentation/) folder.**  
+**There is an installation guide in the [documentation](https://github.com/edenavitan90/QAEngine/tree/main/documentation) folder.**  
 Order Procedure:
 1. QAEngine - DB Installation.mp4
-  - Open the create_db.sh which located in 'db' folder and run each command in your terminal to create our db structure.  
-  - Make sure to run each command seperate from each other (some of the commands are not bash commands). 
+    - Open the create_db.sh which located in 'db' folder and run each command in your terminal to create our db structure.  
+    - Make sure to run each command seperate from each other (some of the commands are not bash commands). 
 2. QAEngine - Servers Initialization.mp4
-  - Run ./db/full_data.py to insert the dataset into the DB.
+    - Run ./db/full_data.py to insert the dataset into the DB.
 3. QAEngine - WebSite Demo.mp4
-  - Quick overview of the application functionallty.
+    - Quick overview of the application functionallty.
 4. QAEngine - DB Presentation.pdf
-  - Screenshots of the DB configurations.
+    - Screenshots of the DB configurations.
