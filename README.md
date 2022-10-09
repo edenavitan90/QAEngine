@@ -41,22 +41,32 @@ Nice to have features:
 
 
 ## Architecture & Technology
-Web application which uses a Client-Server architecture (REST).
-**Search Engine Workflow** -  
+Web application which uses a Client-Server architecture (REST).  
+- **Frontend-Server:** Flask & HTML/CSS
+- **Backend-Server:** Flask
+- **Database:** MongoDB
+- **Configuration Manager:** ZooKeeper
+
+Note:  
+We will use ZooKeeper in order to determine which server will function as leader across all of the other servers.  
+
+### Search Engine Workflow ###  
 The Frontend server will send requests to the Backend server which will be run as following:      
 - Ledear server will get the request (query to search) and will split the work between the workers.
 - Each worker will search the query in its Shard in the DB and will implement the search using TF-IDF algorithm.
 - Each worker will send back the result to the leader server which will then sort them in decreasing order.
 - The leader server will send the response back to the client.
 
-Note:  
-We will use ZooKeeper in order to determine which server will function as leader across all of the other servers.  
+#### Search Runtime ####  
+Running with 1 worker:  
+![1 worker pic](https://user-images.githubusercontent.com/85113161/194761753-a9b2a4b4-81d8-45fa-97e2-bc4af5c7f64c.png)  
 
-- **Frontend-Server:** Flask & HTML/CSS
-- **Backend-Server:** Flask
-- **Database:** MongoDB
-- **Configuration Manager:** ZooKeeper
+Running with 2 workers:  
+![2 workers pic](https://user-images.githubusercontent.com/85113161/194761775-dd8e00cd-ff11-4300-9840-5ebf3f517b12.png)
 
+Here is an example of using the search engine while searcing the same 3 queries in 2 different scenarios (1 worker/2 workers).  
+For the hole run, we are using 2 Shards in MongoDB.  
+It easy to see that the average runtime for 2 workers is much better than the runtime of 1 worker.  
 
 ## Installation Procedure
 First, make sure to create & activated venv:  
