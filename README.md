@@ -21,7 +21,8 @@ Nice to have features:
 
 
 ## Design
-![uml img](https://user-images.githubusercontent.com/85113161/191566814-4dc23b4a-c4e9-4820-b813-ed07948c12cd.png)
+![UML Final final x3](https://user-images.githubusercontent.com/85113161/194756456-a6d8ee7d-10f0-4778-ab0c-14e8afacf8c6.png)
+
 
 - **User** – A person who would like to use the system.
 - **UI** – The web app itself for the use of the user.
