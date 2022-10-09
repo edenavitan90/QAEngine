@@ -6,7 +6,8 @@ A Questions & Answers engine which will provide users the opportunity to
 ask questions in any topic they desired.
 These questions can be answered by other users which can provide their own opinion/answer to the question.
 
-Important! The [documentation](https://github.com/edenavitan90/QAEngine/tree/main/documentation) folder contains relevant installation guides & demo videos for the project.  
+**Important!**  
+The [documentation](https://github.com/edenavitan90/QAEngine/tree/main/documentation) folder contains relevant installation guides & demo videos for the project.  
 As well, a PDF which contains information regarding to the MongoDB data distribution.
 
 ## Features
