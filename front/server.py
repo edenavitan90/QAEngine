@@ -13,7 +13,6 @@ app = Flask(__name__)
 app.secret_key = "justforproject"
 
 
-# TODO: Move to a util file.
 def get_leader(zk, nodes_path):
     children = zk.get_children(nodes_path)
     for child in children:
@@ -41,7 +40,6 @@ def login():
             session["user"] = usr
             return redirect(url_for("platform"))
         else:
-            # TODO: alert upon fail - need to check if DONE
             session["success_register"] = False
             return redirect(url_for("login"))
     else:
@@ -67,7 +65,6 @@ def register():
             url = f"http://{leader_domain}/register"
             response = requests.post(url=url, json=json.dumps(body))
 
-            # TODO: alert upon successful - need to check if DONE
             if response.status_code in consts.STATUS_OK:
                 session["user"] = usr
                 return redirect(url_for("platform"))
@@ -115,7 +112,6 @@ def platform():
 
             url = f"http://{leader_domain}/update_question_rank"
             response = requests.post(url=url, json=json.dumps(body))
-            # TODO: alert if status failed - I don't think there is a need to alert on fail..
             # We cant just alert box with an error had occurred when like or so..
             if response.status_code not in consts.STATUS_OK:
                 pass  # alert box saying error had occurred?
@@ -156,9 +152,6 @@ def new_question():
 
         response = requests.post(url=url, json=json.dumps(body))
 
-        # TODO: alert response - need to check if DONE
-        print(response.status_code)
-        print(response.content.decode())
         if response.status_code in consts.STATUS_OK:
             session["success_register"] = True
             return redirect(url_for("new_question"))
